@@ -1,5 +1,5 @@
 /**
- * Basic. If you write this, be prepared for follow up questions like the function could be broken by passing in a bad default array
+ * Basic recursion. If you write this, be prepared for follow up questions like the function could be broken by passing in a bad default array
  * Example: flattenArray(arr, ['a', 1, 'bad', 'default']);
  */
 
@@ -17,7 +17,7 @@ function flattenArray(arr, result = []) {
 
 
 /**
- * Recursion. Make sure to wrap with outer function.
+ * Recursion within a wrapper. 
  */
 function flattenArray(arr) {
   // Also consider edge case of input being falsey (null/undefined). 
