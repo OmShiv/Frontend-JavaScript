@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Recursive Buttons</title>
+  <style>
+    .button { margin: 5px; display: inline-block; }
+    .child-container { margin-left: 20px; }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+
+  <script>
+    let state = {
+      buttons: [
+        { id: 1, parentId: null, clicks: 0 }
+      ],
+      nextId: 2
+    };
+
+    // Render function
+    function render() {
+      const app = document.getElementById('app');
+      app.innerHTML = '';
+      const tree = buildTree(state.buttons);
+      app.appendChild(renderButtons(tree));
+    }
+
+    // Convert flat list to tree
+    function buildTree(buttons, parentId = null) {
+      return buttons
+        .filter(btn => btn.parentId === parentId)
+        .map(btn => ({
+          ...btn,
+          children: buildTree(buttons, btn.id)
+        }));
+    }
+
+    // Recursive DOM builder
+    function renderButtons(nodes) {
+      const container = document.createElement('div');
+      nodes.forEach(node => {
+        const buttonEl = document.createElement('button');
+        buttonEl.textContent = `Clicked ${node.clicks} times`;
+        buttonEl.className = 'button';
+        buttonEl.dataset.id = node.id;
+        container.appendChild(buttonEl);
+
+        const childContainer = document.createElement('div');
+        childContainer.className = 'child-container';
+        childContainer.appendChild(renderButtons(node.children));
+        container.appendChild(childContainer);
+      });
+      return container;
+    }
+
+    // Click handler
+    document.getElementById('app').addEventListener('click', e => {
+      if (e.target.tagName !== 'BUTTON') return;
+      const id = parseInt(e.target.dataset.id);
+      const updatedButtons = state.buttons.map(btn => 
+        btn.id === id ? { ...btn, clicks: btn.clicks + 1 } : btn
+      );
+      const newButton = {
+        id: state.nextId,
+        parentId: id,
+        clicks: 0
+      };
+      state = {
+        buttons: [...updatedButtons, newButton],
+        nextId: state.nextId + 1
+      };
+      render();
+    });
+
+    render(); // initial render
+  </script>
+</body>
+</html>
