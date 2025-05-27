@@ -7,7 +7,7 @@ function expect(result) {
   return {
     toBe: function(comparator) {
       if (typeof comparator === 'function') {
-        if (!comparator(value)) {
+        if (!comparator(value)) { // * read below
           throw new Error(`Test failed: Expected ${value} but condition did not hold.`);
         }
       } else {
@@ -19,6 +19,13 @@ function expect(result) {
     }
   };
 }
+
+/**
+ * comparator is not `equalTo` or `greaterThan`, rather, it is a returned function from them. Closes over their value.
+ * eg: `equalTo` will get in a value, and return a closure function having access to this value. This closure function becomes the comparator in toBe
+ * `tobe` already closes over the input `result` from the `expect` function
+ * This is a combo of 2 closures working together.
+ */
 
 /**
  * We need to define them to return a function so the result value could be passed in as a closure to these functions
